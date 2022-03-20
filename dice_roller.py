@@ -33,6 +33,12 @@ try:
     time.sleep(20)
     epd.Clear(0xFF)
 
+    logging.info("loading the don_doge.bmp")
+    Himage = Image.open(don_doge.bmp)
+    epd.display(epd.getbuffer(Himage))
+    time.sleep(20)
+    epd.Clear(0xFF)
+    epd.sleep()
             
 except IOError as e:
     logging.info(e)
@@ -41,3 +47,5 @@ except KeyboardInterrupt:
     logging.info("ctrl + c:")
     epd2in7.epdconfig.module_exit()
     exit()
+
+    
