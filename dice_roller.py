@@ -30,11 +30,9 @@ try:
     draw.rectangle((10, 150, 60, 200), fill = 0)
     draw.chord((70, 150, 120, 200), 0, 360, fill = 0)
     epd.display(epd.getbuffer(Limage))
-    time.sleep(2)
-    
-    '''4Gray display'''
-    logging.info("4Gray display--------------------------------")
-    epd.Init_4Gray()
+    time.sleep(20)
+    epd.Clear(0xFF)
+
             
 except IOError as e:
     logging.info(e)
