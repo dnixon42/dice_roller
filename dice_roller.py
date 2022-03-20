@@ -34,7 +34,7 @@ try:
     epd.Clear(0xFF)
 
     logging.info("loading the don_doge.bmp")
-    Himage = Image.open(don_doge.bmp)
+    Himage = Image.open("don_doge.bmp")
     epd.display(epd.getbuffer(Himage))
     time.sleep(20)
     epd.Clear(0xFF)
