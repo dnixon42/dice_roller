@@ -13,9 +13,10 @@ logging.basicConfig(level=logging.DEBUG)
 
 try:
 
-    logging.info("epd2in7 Demo")   
+    logging.info("epd2in7 Demo")
     epd = epd2in7.EPD()
-    
+    epd.init()
+    epd.Clear(0xFF)
     # Drawing on the Vertical image
     logging.info("2.Drawing on the Vertical image...")
     Limage = Image.new('1', (epd.width, epd.height), 255)  # 255: clear the frame
