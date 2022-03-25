@@ -2,50 +2,66 @@
 # -*- coding:utf-8 -*-
 import sys
 import os
-
+import random
 import logging
 import epd2in7
 import time
 from PIL import Image,ImageDraw,ImageFont
 import traceback
+import RPi.GPIO as GPIO
 
 logging.basicConfig(level=logging.DEBUG)
 
-try:
+#define pins on the display
+BUTTON_PIN1 = 5
+BUTTON_PIN2 = 6
+BUTTON_PIN3 = 13
+BUTTON_PIN4 = 19
+Debounce = 0.02
 
-    logging.info("epd2in7 Demo")
-    epd = epd2in7.EPD()
+#define screen resolution
+h = 264
+w = 176
+
+#set up the buttons
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(BUTTON_PIN1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(BUTTON_PIN2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(BUTTON_PIN3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(BUTTON_PIN4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+#init the screen to clear it out
+epd = epd2in7.EPD()
+epd.init()
+epd.Clear()
+
+def DEMO():
     epd.init()
-    epd.Clear(0xFF)
-    # Drawing on the Vertical image
-    logging.info("2.Drawing on the Vertical image...")
-    Limage = Image.new('1', (epd.width, epd.height), 255)  # 255: clear the frame
-    draw = ImageDraw.Draw(Limage)
-    draw.line((10, 90, 60, 140), fill = 0)
-    draw.line((60, 90, 10, 140), fill = 0)
-    draw.rectangle((10, 90, 60, 140), outline = 0)
-    draw.line((95, 90, 95, 140), fill = 0)
-    draw.line((70, 115, 120, 115), fill = 0)
-    draw.arc((70, 90, 120, 140), 0, 360, fill = 0)
-    draw.rectangle((10, 150, 60, 200), fill = 0)
-    draw.chord((70, 150, 120, 200), 0, 360, fill = 0)
-    epd.display(epd.getbuffer(Limage))
-    time.sleep(20)
-    epd.Clear(0xFF)
-
     logging.info("loading the don_doge.bmp")
     Himage = Image.open("don_doge.bmp")
     epd.display(epd.getbuffer(Himage))
-    time.sleep(20)
-    epd.Clear(0xFF)
     epd.sleep()
-            
-except IOError as e:
-    logging.info(e)
-    
-except KeyboardInterrupt:    
-    logging.info("ctrl + c:")
-    epd2in7.epdconfig.module_exit()
-    exit()
 
-    
+def diceroll(faces):
+    epd.init()
+    output = (random.randint(0,faces - 1))+1
+    body = ImageFont.truetype('Oswald.ttf', 48)
+    image = Image.new(mode='1', size=(w,h), color=128)
+    draw = ImageDraw.Draw(image)
+    draw.text((70, 80), str(output), font=body, align='center', fill=0)
+    epd.display(epd.getbuffer(image))
+    epd.sleep()
+    return output
+
+while True:
+    time.sleep(Debounce)
+    if not GPIO.input(BUTTON_PIN2):
+        DEMO()
+    if not GPIO.input(BUTTON_PIN4):
+        exit()
+    if not GPIO.input(BUTTON_PIN3):
+        epd.init()
+        epd.Clear(0xFF)
+    if not GPIO.input(BUTTON_PIN1):
+        faces = 20
+        print(diceroll(faces))
