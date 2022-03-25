@@ -53,8 +53,35 @@ def diceroll(faces):
     epd.sleep()
     return output
 
+def facecount():
+    print("waiting half a second to debounce")
+    time.sleep(.5)
+    while True:
+        print("awaiting input button")
+        time.sleep(Debounce)
+        if not GPIO.input(BUTTON_PIN1):
+            print("button 1")
+            faces = 20
+            print(diceroll(faces))
+            return()
+        if not GPIO.input(BUTTON_PIN2):
+            print("button 2")
+            faces = 6
+            print(diceroll(faces))
+            return()
+        if not GPIO.input(BUTTON_PIN3):
+            print("button 3")
+            faces = 10
+            print(diceroll(faces))
+            return()
+        if not GPIO.input(BUTTON_PIN4):
+            print("button 4")
+            return()
+        
 while True:
     time.sleep(Debounce)
+    if not GPIO.input(BUTTON_PIN1):
+        facecount()
     if not GPIO.input(BUTTON_PIN2):
         DEMO()
     if not GPIO.input(BUTTON_PIN4):
@@ -62,6 +89,4 @@ while True:
     if not GPIO.input(BUTTON_PIN3):
         epd.init()
         epd.Clear(0xFF)
-    if not GPIO.input(BUTTON_PIN1):
-        faces = 20
-        print(diceroll(faces))
+
