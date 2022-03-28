@@ -56,6 +56,13 @@ def diceroll(faces):
 def facecount():
     print("waiting half a second to debounce")
     time.sleep(.5)
+    epd.init()
+    body = ImageFont.truetype('Oswald.ttf',24)
+    image = Image.new(mode='1', size=(w,h), color=255)
+    draw = ImageDraw.Draw(image)
+    draw.text((1,160), "Choose a dice", font=body, align='left', fill=0)
+    draw.text((1,190), "20     6     10   exit", font=body, align='left', fill=0)
+    epd.display(epd.getbuffer(image))
     while True:
         print("awaiting input button")
         time.sleep(Debounce)
@@ -84,9 +91,8 @@ while True:
         facecount()
     if not GPIO.input(BUTTON_PIN2):
         DEMO()
-    if not GPIO.input(BUTTON_PIN4):
-        exit()
     if not GPIO.input(BUTTON_PIN3):
         epd.init()
         epd.Clear(0xFF)
-
+    if not GPIO.input(BUTTON_PIN4):
+        exit()
